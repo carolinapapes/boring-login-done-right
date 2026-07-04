@@ -1,4 +1,4 @@
-name: Typecheck
+name: CI
 
 on:
   pull_request:
@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  typecheck:
+  quality:
+    name: Quality checks
     runs-on: ubuntu-latest
 
     defaults:
@@ -34,3 +35,9 @@ jobs:
 
       - name: Run typecheck
         run: pnpm typecheck
+
+      - name: Run lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
