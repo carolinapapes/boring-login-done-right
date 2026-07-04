@@ -20,6 +20,14 @@ function mapStatusToLoginErrorCode(status: number): LoginErrorCode {
   return LOGIN_STATUS_ERROR_CODES.get(status) ?? "SERVER_ERROR";
 }
 
+async function parseLoginSuccess(response: Response): Promise<LoginResponse> {
+  try {
+    return (await response.json()) as LoginResponse;
+  } catch {
+    throw new LoginError("SERVER_ERROR");
+  }
+}
+
 async function parseLoginError(response: Response): Promise<LoginError> {
   try {
     const data = (await response.json()) as LoginApiErrorResponse;
@@ -55,5 +63,5 @@ export async function login(
     throw await parseLoginError(response);
   }
 
-  return response.json() as Promise<LoginResponse>;
+  return parseLoginSuccess(response);
 }
