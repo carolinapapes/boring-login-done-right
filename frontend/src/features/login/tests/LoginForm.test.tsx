@@ -78,4 +78,25 @@ describe("LoginForm", () => {
       expect.anything(),
     );
   });
+  it("shows the submitting state", () => {
+    render(<LoginForm onSubmit={vi.fn()} isSubmitting />);
+
+    const button = screen.getByRole("button", { name: "Logging in..." });
+
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-busy", "true");
+  });
+
+  it("shows a login error message", () => {
+    render(
+      <LoginForm
+        onSubmit={vi.fn()}
+        errorMessage="Invalid email or password."
+      />,
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Invalid email or password.",
+    );
+  });
 });
