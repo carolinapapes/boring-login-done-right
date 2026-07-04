@@ -1,130 +1,216 @@
 # boring-login-done-right
 
-A boring login form built properly.
+A small login flow built with care.
 
-Not fancy. Just a small frontend project focused on doing one very common thing well: a login experience that is clean, accessible, tested, responsive, and pleasant to use.
+Not flashy. Just one common frontend feature implemented with clean structure, validation, accessible form behavior, mocked API states, safe error handling, tests, and production-minded decisions.
 
-Because yes, it is another login form. But this one is boring on purpose.
+## Why this project exists
 
-## About the project
+Login forms look simple, but they touch many important frontend concerns.
 
-This is a personal frontend project built around a simple idea: take a feature that usually looks easy and treat it with real product-quality standards.
+**Form state** — The UI needs predictable input, validation, and submit behavior.
 
-A login form is small, but it touches many important frontend skills:
+**Validation** — User input should be checked before it reaches the API boundary.
 
-- form state
-- validation
-- user feedback
-- loading states
-- error handling
-- accessibility
-- routing
-- API integration
-- testing
-- responsive design
-- clean code
-- security-aware frontend behavior
+**Accessibility** — Errors, labels, and interactions should work beyond visual mouse usage.
 
-The goal is not to build a complete authentication system. The goal is to build a focused login flow that feels reliable, maintainable, and ready to grow.
+**API boundaries** — React components should not know backend implementation details.
 
-## Planned features
+**Error handling** — Users should see clear messages, not raw backend failures.
 
-The project will start with the core login experience and grow from there.
+**Testing** — A small feature should still be protected against regressions.
 
-Planned features include:
+**Security-aware frontend behavior** — Credentials and sensitive auth details should not leak into logs, UI, analytics, or monitoring.
 
-- email and password login form
-- form validation
-- clear validation messages
-- accessible labels and errors
-- loading and disabled states
-- API error handling
-- mocked backend responses
-- slow-network states
-- skeleton loading UI
-- forgot password page
-- protected dashboard route
-- session checking
-- redirect after login
-- responsive layout
-- keyboard-friendly interaction
-- password manager support
-- internationalization
-- safe analytics events
-- frontend error monitoring
-- unit tests
-- component tests
-- end-to-end tests
-- accessibility tests
-- Storybook UI states
-- CI checks
+The goal is not to build a complete authentication platform. The goal is to build a focused login flow that feels reliable, maintainable, and ready to grow.
 
 ## Tech stack
 
-This project is planned with:
+| Area                          | Tools                                                                                     |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| Core                          | React, TypeScript, Vite                                                                   |
+| Forms                         | React Hook Form                                                                           |
+| Validation                    | Zod                                                                                       |
+| Form/schema integration       | React Hook Form Resolvers (`@hookform/resolvers`)                                         |
+| Server state and API handling | TanStack Query, typed API boundaries, Fetch API                                           |
+| API mocking                   | MSW                                                                                       |
+| UI and styling                | Tailwind CSS, shadcn/ui                                                                   |
+| Testing                       | Vitest, React Testing Library, `@testing-library/user-event`, `@testing-library/jest-dom` |
+| Code quality                  | ESLint, Prettier, TypeScript strict mode                                                  |
+| CI                            | GitHub Actions                                                                            |
 
-- React
-- TypeScript
-- React Hook Form
-- Zod
-- TanStack Query
-- React Router
-- Tailwind CSS
-- shadcn/ui
-- i18n
-- Sentry
-- Vitest
-- React Testing Library
-- MSW
-- Playwright
-- axe accessibility checks
-- Storybook
-- ESLint
-- Prettier
-- GitHub Actions
+## Features
 
-## Project scope
+### Done
 
-This repository focuses on the frontend side of a login flow.
+- Email and password login form
+- Schema-based validation with Zod
+- React Hook Form integration
+- Validation on blur
+- Error clearing while editing
+- Accessible labels and error messages
+- Correct autocomplete attributes
+- Reusable form components
+- Typed login API boundary
+- TanStack Query login mutation
+- MSW mocked login responses
+- Frontend-safe error codes
+- User-friendly error message mapping
+- Unit tests for validation and error mapping
+- Component tests for form behavior
+- API tests with mocked responses
+- TypeScript strict mode
+- ESLint and Prettier setup
+- GitHub Actions quality checks
 
-Included in the scope:
+### Planned
 
-- login page
-- forgot password page
-- basic dashboard page
-- protected route behavior
-- session-checking UI
-- mocked API behavior
-- realistic loading and error states
+- Stronger loading and pending states
+- Disabled submit while logging in
+- Double-submit prevention
+- Slow-network feedback
+- Skeleton loading UI
+- Forgot password route
+- Protected dashboard route
+- Session checking
+- Redirect behavior after login
+- Password visibility toggle
+- Remember-me checkbox
+- Responsive layout polish
+- Internationalization
+- Playwright end-to-end tests
+- Accessibility tests with axe
+- Storybook documentation
+- Frontend error monitoring
+- Safe analytics events
+- Final portfolio polish
 
-Not included for now:
+## API states
 
-- sign-up
-- OAuth
-- two-factor authentication
-- user roles
-- permissions
-- account settings
-- full backend authentication
-- real password storage
+| Scenario             | Mock input               | Result                             |
+| -------------------- | ------------------------ | ---------------------------------- |
+| Successful login     | `success@example.com`    | Returns a user                     |
+| Account not verified | `unverified@example.com` | Returns `ACCOUNT_NOT_VERIFIED`     |
+| Rate limited         | `limited@example.com`    | Returns `RATE_LIMITED`             |
+| Server error         | `server@example.com`     | Returns `SERVER_ERROR`             |
+| Network error        | `network@example.com`    | Simulates a failed network request |
+| Slow response        | `slow@example.com`       | Delays before returning success    |
+| Invalid credentials  | Any other email          | Returns `INVALID_CREDENTIALS`      |
 
-## What this project should demonstrate
+## Project structure
 
-This project is meant to show that even a small feature can be built with care.
+```txt
+frontend/
+  src/
+    app/
+      providers.tsx        # App-level providers, such as TanStack Query.
 
-It should demonstrate:
+    components/
+      forms/               # Shared form building blocks.
+      layout/              # Shared layout components.
+      ui/                  # Reusable UI primitives.
 
-- clean component structure
-- strong TypeScript usage
-- schema-based validation
-- separation between UI and API logic
-- accessible form behavior
-- thoughtful loading and error states
-- realistic mocked API scenarios
-- safe handling of sensitive data
-- testing across different levels
-- production-minded frontend decisions
+    features/
+      login/
+        api/               # Login request boundary and API response handling.
+        components/        # Login-specific UI components.
+        hooks/             # Login mutation and feature-level behavior.
+        model/             # Login types, validation schema, and error definitions.
+        tests/             # Tests for the login feature.
 
-## Current status
+    lib/
+      queryClient.ts       # Shared TanStack Query client configuration.
 
-Early development.
+    mocks/
+      browser.ts           # MSW setup for the browser.
+      server.ts            # MSW setup for tests.
+      handlers/            # Mocked API handlers.
+
+    test/                  # Shared test setup.
+```
+
+## Login flow architecture
+
+```mermaid
+flowchart TD
+  User[User] --> Form[LoginForm]
+  Form --> RHF[React Hook Form]
+  RHF --> Zod[Zod schema]
+  RHF --> Submit[Valid submit]
+  Submit --> Hook[useLogin]
+  Hook --> Query[TanStack Query mutation]
+  Query --> API[login API boundary]
+  API --> Backend[MSW mocked backend]
+  Backend --> Mapper[Safe error mapping]
+  Mapper --> UI[User-friendly UI feedback]
+```
+
+## Getting started
+
+```bash
+git clone https://github.com/carolinapapes/boring-login-done-right.git
+cd boring-login-done-right/frontend
+pnpm install
+pnpm dev
+```
+
+## Available scripts
+
+| Command             | Purpose                                        |
+| ------------------- | ---------------------------------------------- |
+| `pnpm dev`          | Starts the Vite development server.            |
+| `pnpm build`        | Builds the project for production.             |
+| `pnpm preview`      | Previews the production build locally.         |
+| `pnpm typecheck`    | Runs TypeScript checks without emitting files. |
+| `pnpm lint`         | Runs ESLint with zero warnings allowed.        |
+| `pnpm lint:fix`     | Runs ESLint and fixes issues when possible.    |
+| `pnpm format`       | Formats files with Prettier.                   |
+| `pnpm format:check` | Checks whether files are correctly formatted.  |
+| `pnpm test`         | Runs Vitest in watch mode.                     |
+| `pnpm test:run`     | Runs the test suite once.                      |
+| `pnpm check:ci`     | Runs the same quality checks used by CI.       |
+
+## Security-aware frontend behavior
+
+The frontend does not own authentication security, but it should support secure behavior by default.
+
+This project avoids exposing credentials, raw backend errors, stack traces, or sensitive authentication details in the UI. Login errors are mapped to controlled frontend error codes before they reach the component, so the user sees clear and safe messages instead of implementation details.
+
+Password values stay limited to the form flow, and future analytics or monitoring work should avoid sending passwords, raw emails, tokens, full API responses, or sensitive backend messages.
+
+The goal is not to pretend the frontend can replace backend security. The goal is to make sure the login UI does not weaken the overall authentication flow.
+
+## Testing strategy
+
+The project uses Vitest, React Testing Library, @testing-library/user-event, @testing-library/jest-dom, and MSW.
+
+Vitest covers isolated logic such as the login schema, API response handling, and error mapping.
+
+React Testing Library covers the login form from the user’s point of view: rendering fields, validating on blur, clearing errors while typing, submitting valid values, and showing API errors.
+
+MSW mocks backend login responses, including success, invalid credentials, account not verified, rate limited, server error, network error, and slow response.
+
+Future milestones will add Playwright for end-to-end tests and @axe-core/playwright for accessibility checks.
+
+## CI
+
+GitHub Actions runs project quality checks on pull requests.
+
+The current workflow checks that:
+
+- dependencies can be installed
+- TypeScript passes
+- linting passes
+- formatting is correct
+- tests pass before changes are merged
+
+At this stage, CI is focused on fast feedback. Later milestones can expand the workflow with:
+
+- routing checks
+- end-to-end tests
+- accessibility checks
+- Storybook checks
+
+Name
+
+Because yes, it is another login form.
