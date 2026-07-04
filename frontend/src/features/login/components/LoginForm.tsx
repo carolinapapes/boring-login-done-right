@@ -2,7 +2,7 @@ import type { SubmitHandler } from "react-hook-form";
 
 import { Form } from "@/components/forms/Form";
 import { FormSubmitButton } from "@/components/forms/FormSubmitButton";
-import { FormTextField } from "@/components/forms/FormTextField";
+import { LoginFields } from "./LoginFields";
 import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 import { useLoginForm } from "../hooks/useLoginForm";
@@ -24,26 +24,10 @@ export function LoginForm({
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <FormTextField
-        id="email"
-        name="email"
-        label="Email"
-        type="email"
-        autoComplete="email"
-        register={register("email")}
-        error={errors.email?.message}
-        onFocus={() => clearErrors("email")}
-      />
-
-      <FormTextField
-        id="password"
-        name="password"
-        label="Password"
-        type="password"
-        autoComplete="current-password"
-        register={register("password")}
-        error={errors.password?.message}
-        onFocus={() => clearErrors("password")}
+      <LoginFields
+        register={register}
+        errors={errors}
+        clearErrors={clearErrors}
       />
 
       {errorMessage && (
