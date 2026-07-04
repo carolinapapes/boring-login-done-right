@@ -211,6 +211,8 @@ At this stage, CI is focused on fast feedback. Later milestones can expand the w
 - accessibility checks
 - Storybook checks
 
-Name
+## Name
 
 Because yes, it is another login form.
+
+But this one is boring on purpose.
