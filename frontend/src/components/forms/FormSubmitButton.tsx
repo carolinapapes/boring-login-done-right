@@ -15,6 +15,7 @@ export function FormSubmitButton({
     <Button
       type="submit"
       disabled={isSubmitting}
+      aria-busy={isSubmitting}
       className="h-11 w-full text-base"
     >
       {isSubmitting ? submittingText : children}
