@@ -23,7 +23,7 @@ export function LoginForm({
   const { clearErrors, errors, handleSubmit, register } = useLoginForm();
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} noValidate>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <LoginFields
         register={register}
         errors={errors}
