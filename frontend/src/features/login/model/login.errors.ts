@@ -28,3 +28,11 @@ export function isLoginErrorCode(code: unknown): code is LoginErrorCode {
 export function getLoginErrorMessage(code: LoginErrorCode): string {
   return LOGIN_ERROR_MESSAGES[code];
 }
+
+export function getLoginErrorMessageFromError(error: unknown): string {
+  if (error instanceof LoginError) {
+    return getLoginErrorMessage(error.code);
+  }
+
+  return LOGIN_ERROR_MESSAGES.SERVER_ERROR;
+}
