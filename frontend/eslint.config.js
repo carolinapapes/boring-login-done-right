@@ -65,4 +65,11 @@ export default defineConfig([
       },
     },
   },
+  // Do not apply this React Refresh rule to generated shadcn UI files.
+  {
+    files: ["src/components/ui/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
 ]);
