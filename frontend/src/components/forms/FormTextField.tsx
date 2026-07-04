@@ -8,7 +8,9 @@ type FormTextFieldProps = {
   type?: React.HTMLInputTypeAttribute;
   autoComplete?: string;
   placeholder?: string;
+  register?: React.InputHTMLAttributes<HTMLInputElement>;
   error?: string;
+  onFocus?: () => void;
 };
 
 export function FormTextField({
@@ -18,7 +20,9 @@ export function FormTextField({
   type = "text",
   autoComplete,
   placeholder,
+  register,
   error,
+  onFocus,
 }: FormTextFieldProps) {
   const errorId = `${id}-error`;
 
@@ -29,6 +33,7 @@ export function FormTextField({
       </label>
 
       <Input
+        {...register}
         id={id}
         name={name}
         type={type}
@@ -37,6 +42,7 @@ export function FormTextField({
         aria-invalid={error ? "true" : "false"}
         aria-describedby={error ? errorId : undefined}
         className="h-11"
+        onFocus={onFocus}
       />
 
       {error && (
