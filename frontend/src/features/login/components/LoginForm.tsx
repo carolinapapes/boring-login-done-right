@@ -3,20 +3,27 @@ import type { SubmitHandler } from "react-hook-form";
 import { Form } from "@/components/forms/Form";
 import { FormSubmitButton } from "@/components/forms/FormSubmitButton";
 import { FormTextField } from "@/components/forms/FormTextField";
+import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 import { useLoginForm } from "../hooks/useLoginForm";
+
 import type { LoginFormValues } from "../model/login.schema";
 
 type LoginFormProps = {
   onSubmit: SubmitHandler<LoginFormValues>;
+  isSubmitting?: boolean;
+  errorMessage?: string;
 };
 
-export function LoginForm({ onSubmit }: LoginFormProps) {
-  const { clearErrors, errors, handleSubmit, register } =
-    useLoginForm(onSubmit);
+export function LoginForm({
+  onSubmit,
+  isSubmitting = false,
+  errorMessage,
+}: LoginFormProps) {
+  const { clearErrors, errors, handleSubmit, register } = useLoginForm();
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit(onSubmit)} noValidate>
       <FormTextField
         id="email"
         name="email"
@@ -39,7 +46,16 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         onFocus={() => clearErrors("password")}
       />
 
-      <FormSubmitButton>Log in</FormSubmitButton>
+      {errorMessage && (
+        <FormErrorMessage id="login-error" message={errorMessage} />
+      )}
+
+      <FormSubmitButton
+        isSubmitting={isSubmitting}
+        submittingText="Logging in..."
+      >
+        Log in
+      </FormSubmitButton>
     </Form>
   );
 }
