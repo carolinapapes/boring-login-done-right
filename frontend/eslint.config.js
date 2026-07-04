@@ -23,21 +23,25 @@ export default defineConfig([
       prettierConfig,
     ],
     languageOptions: {
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.es2023,
+      },
     },
     plugins: {
       "unused-imports": unusedImports,
     },
     rules: {
       "@typescript-eslint/consistent-type-imports": [
-        "warn",
+        "error",
         { prefer: "type-imports" },
       ],
 
       "@typescript-eslint/no-unused-vars": "off",
-      "unused-imports/no-unused-imports": "warn",
+
+      "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [
-        "warn",
+        "error",
         {
           vars: "all",
           varsIgnorePattern: "^_",
@@ -46,7 +50,7 @@ export default defineConfig([
         },
       ],
 
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": ["error", { allow: ["warn", "error"] }],
     },
   },
 
@@ -56,6 +60,7 @@ export default defineConfig([
     languageOptions: {
       globals: {
         ...globals.browser,
+        ...globals.es2023,
         ...globals.vitest,
       },
     },
