@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+echo "Running frontend quality checks..."
+
+cd frontend
+
+pnpm check:ci
