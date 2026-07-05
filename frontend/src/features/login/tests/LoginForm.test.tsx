@@ -99,4 +99,44 @@ describe("LoginForm", () => {
       "Invalid email or password.",
     );
   });
+  it("submits the form only once when the submit button is clicked rapidly", async () => {
+    const user = userEvent.setup();
+
+    const onSubmit = vi.fn(
+      () => new Promise((resolve) => setTimeout(resolve, 100)),
+    );
+
+    render(<LoginForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/email/i), "user@example.com");
+    await user.type(screen.getByLabelText(/password/i), "password");
+
+    const submitButton = screen.getByRole("button", { name: /log in/i });
+
+    await Promise.all([user.click(submitButton), user.click(submitButton)]);
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
+  it("submits only once when Enter is pressed repeatedly", async () => {
+    const user = userEvent.setup();
+
+    const onSubmit = vi.fn(
+      () => new Promise((resolve) => setTimeout(resolve, 100)),
+    );
+
+    render(<LoginForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/email/i), "user@example.com");
+    const password = screen.getByLabelText(/password/i);
+
+    await user.type(password, "password");
+
+    await Promise.all([
+      user.keyboard("{Enter}"),
+      user.keyboard("{Enter}"),
+      user.keyboard("{Enter}"),
+    ]);
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
 });
