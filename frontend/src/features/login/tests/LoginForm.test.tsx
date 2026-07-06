@@ -1,3 +1,4 @@
+import { act } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -138,5 +139,22 @@ describe("LoginForm", () => {
     ]);
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
+  it("shows slow network feedback when login takes longer than expected", () => {
+    vi.useFakeTimers();
+
+    render(<LoginForm onSubmit={vi.fn()} isSubmitting />);
+
+    expect(
+      screen.queryByText(/taking longer than usual/i),
+    ).not.toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(screen.getByText(/taking longer than usual/i)).toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 });
