@@ -59,7 +59,7 @@ export function FormTextField({
             aria-label={endButton.label}
             aria-pressed={endButton.pressed}
             onClick={endButton.onClick}
-            className="absolute inset-y-0 right-3 text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute inset-y-0 right-3 flex items-center text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {endButton.text}
           </button>
