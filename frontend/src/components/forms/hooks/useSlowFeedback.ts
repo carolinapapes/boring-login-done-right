@@ -4,11 +4,14 @@ export function useSlowFeedback(isActive: boolean, delay = 1000) {
   const [shouldShow, setShouldShow] = useState(false);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setShouldShow(isActive);
-    }, delay);
+    const timeoutId = setTimeout(
+      () => {
+        setShouldShow(isActive);
+      },
+      isActive ? delay : 0,
+    );
 
-    return () => window.clearTimeout(timeoutId);
+    return () => clearTimeout(timeoutId);
   }, [isActive, delay]);
 
   return isActive && shouldShow;
