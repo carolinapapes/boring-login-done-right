@@ -109,7 +109,7 @@ describe("LoginForm", () => {
     render(<LoginForm onSubmit={onSubmit} />);
 
     await user.type(screen.getByLabelText(/email/i), "user@example.com");
-    await user.type(screen.getByLabelText(/password/i), "password");
+    await user.type(screen.getByLabelText(/^password$/i), "password");
 
     const submitButton = screen.getByRole("button", { name: /log in/i });
 
@@ -127,7 +127,7 @@ describe("LoginForm", () => {
     render(<LoginForm onSubmit={onSubmit} />);
 
     await user.type(screen.getByLabelText(/email/i), "user@example.com");
-    const password = screen.getByLabelText(/password/i);
+    const password = screen.getByLabelText(/^password$/i);
 
     await user.type(password, "password");
 
@@ -189,5 +189,32 @@ describe("LoginForm", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+  it("toggles password visibility", async () => {
+    const user = userEvent.setup();
+
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    const passwordInput = screen.getByLabelText(/^password$/i);
+    const toggleButton = screen.getByRole("button", {
+      name: /show password/i,
+    });
+
+    expect(passwordInput).toHaveAttribute("type", "password");
+    expect(toggleButton).toHaveAttribute("aria-pressed", "false");
+
+    await user.click(toggleButton);
+
+    expect(passwordInput).toHaveAttribute("type", "text");
+    expect(
+      screen.getByRole("button", { name: /hide password/i }),
+    ).toHaveAttribute("aria-pressed", "true");
+
+    await user.click(screen.getByRole("button", { name: /hide password/i }));
+
+    expect(passwordInput).toHaveAttribute("type", "password");
+    expect(
+      screen.getByRole("button", { name: /show password/i }),
+    ).toHaveAttribute("aria-pressed", "false");
   });
 });
