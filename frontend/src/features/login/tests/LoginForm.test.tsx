@@ -171,14 +171,14 @@ describe("LoginForm", () => {
         screen.queryByText(/taking longer than usual/i),
       ).not.toBeInTheDocument();
 
-             rerender(<LoginForm onSubmit={vi.fn()} isSubmitting />);
-       expect(
-         screen.queryByText(/taking longer than usual/i),
-       ).not.toBeInTheDocument();
-       act(() => {
-         vi.advanceTimersByTime(1000);
-       });
-       expect(screen.getByText(/taking longer than usual/i)).toBeInTheDocument();
+      rerender(<LoginForm onSubmit={vi.fn()} isSubmitting />);
+      expect(
+        screen.queryByText(/taking longer than usual/i),
+      ).not.toBeInTheDocument();
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+      expect(screen.getByText(/taking longer than usual/i)).toBeInTheDocument();
     } finally {
       vi.useRealTimers();
     }
