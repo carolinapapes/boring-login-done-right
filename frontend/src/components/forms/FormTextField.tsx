@@ -50,7 +50,7 @@ export function FormTextField({
           placeholder={placeholder}
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? errorId : undefined}
-          className="h-11"
+          className={endButton ? "h-11 pr-16" : "h-11"}
           onFocus={onFocus}
         />
         {endButton && (
