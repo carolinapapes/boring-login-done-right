@@ -28,7 +28,7 @@ describe("LoginSection", () => {
   it("shows a pending state while login is submitting", async () => {
     server.use(
       http.post("/api/login", async () => {
-        await delay(10);
+        await delay(50);
 
         return HttpResponse.json({
           user: {
