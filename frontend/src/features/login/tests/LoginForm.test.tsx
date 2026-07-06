@@ -200,6 +200,9 @@ describe("LoginForm", () => {
       name: /show password/i,
     });
 
+    await user.type(passwordInput, "password");
+    
+    expect(passwordInput).toHaveValue("password");
     expect(passwordInput).toHaveAttribute("type", "password");
     expect(toggleButton).toHaveAttribute("aria-pressed", "false");
 
