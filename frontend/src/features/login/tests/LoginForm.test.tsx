@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -138,5 +138,56 @@ describe("LoginForm", () => {
     ]);
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
+  it("shows and hides slow network feedback based on the submitting state", () => {
+    vi.useFakeTimers();
+
+    try {
+      const { rerender } = render(
+        <LoginForm onSubmit={vi.fn()} isSubmitting />,
+      );
+
+      expect(
+        screen.queryByText(/taking longer than usual/i),
+      ).not.toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(999);
+      });
+
+      expect(
+        screen.queryByText(/taking longer than usual/i),
+      ).not.toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+
+      expect(screen.getByText(/taking longer than usual/i)).toBeInTheDocument();
+
+      rerender(<LoginForm onSubmit={vi.fn()} isSubmitting={false} />);
+
+      act(() => {
+        vi.advanceTimersByTime(0);
+      });
+
+      expect(
+        screen.queryByText(/taking longer than usual/i),
+      ).not.toBeInTheDocument();
+
+      rerender(<LoginForm onSubmit={vi.fn()} isSubmitting />);
+
+      expect(
+        screen.queryByText(/taking longer than usual/i),
+      ).not.toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+
+      expect(screen.getByText(/taking longer than usual/i)).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

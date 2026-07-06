@@ -3,9 +3,10 @@ import type { SubmitHandler } from "react-hook-form";
 import { Form } from "@/components/forms/Form";
 import { FormSubmitButton } from "@/components/forms/FormSubmitButton";
 import { LoginFields } from "./LoginFields";
-import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
+import { FormMessage } from "@/components/forms/FormMessage";
 import { usePreventDuplicateSubmit } from "@/components/forms/hooks/usePreventDuplicateSubmit";
 import { useLoginForm } from "../hooks/useLoginForm";
+import { useSlowFeedback } from "@/components/forms/hooks/useSlowFeedback";
 
 import type { LoginFormValues } from "../model/login.schema";
 
@@ -22,6 +23,7 @@ export function LoginForm({
 }: LoginFormProps) {
   const { clearErrors, errors, handleSubmit, register } = useLoginForm();
   const guardedSubmit = usePreventDuplicateSubmit(onSubmit);
+  const showSlowFeedback = useSlowFeedback(isSubmitting);
 
   return (
     <Form onSubmit={handleSubmit(guardedSubmit)}>
@@ -31,8 +33,13 @@ export function LoginForm({
         clearErrors={clearErrors}
       />
 
-      {errorMessage && (
-        <FormErrorMessage id="login-error" message={errorMessage} />
+      {errorMessage && <FormMessage id="login-error" message={errorMessage} />}
+
+      {showSlowFeedback && (
+        <FormMessage
+          message="This is taking longer than usual."
+          variant="status"
+        />
       )}
 
       <FormSubmitButton
