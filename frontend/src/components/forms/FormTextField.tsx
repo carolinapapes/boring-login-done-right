@@ -1,7 +1,7 @@
 import { Stack } from "@/components/layout/Stack";
 import { Input } from "@/components/ui/input";
-import { FormMessage } from "./FormMessage";
 import { Label } from "@/components/ui/label";
+import { FormMessage } from "./FormMessage";
 
 type FormTextFieldEndButtonProps = {
   label: string;
@@ -16,10 +16,12 @@ type FormTextFieldProps = {
   label: string;
   type?: React.HTMLInputTypeAttribute;
   autoComplete?: string;
+  inputMode?: React.InputHTMLAttributes<HTMLInputElement>["inputMode"];
+  spellCheck?: boolean;
+  autoCapitalize?: string;
   placeholder?: string;
   register?: React.InputHTMLAttributes<HTMLInputElement>;
   error?: string;
-  onFocus?: () => void;
   endButton?: FormTextFieldEndButtonProps;
 };
 
@@ -48,10 +50,12 @@ export function FormTextField({
   label,
   type = "text",
   autoComplete,
+  inputMode,
+  spellCheck,
+  autoCapitalize,
   placeholder,
   register,
   error,
-  onFocus,
   endButton,
 }: FormTextFieldProps) {
   const errorId = `${id}-error`;
@@ -61,20 +65,22 @@ export function FormTextField({
       <Label htmlFor={id}>{label}</Label>
       <div className="relative">
         <Input
-          {...register}
           id={id}
           name={name}
           type={type}
           autoComplete={autoComplete}
+          inputMode={inputMode}
+          spellCheck={spellCheck}
+          autoCapitalize={autoCapitalize}
           placeholder={placeholder}
-          aria-invalid={error ? "true" : "false"}
+          aria-invalid={Boolean(error)}
           aria-describedby={error ? errorId : undefined}
           className={endButton ? "h-11 pr-16" : "h-11"}
-          onFocus={onFocus}
+          {...register}
         />
         {endButton && <OptionalButton {...endButton} />}
       </div>
-      {error && <FormMessage id={errorId} message={error} />}
+      <FormMessage id={errorId} message={error} reserveSpace />
     </Stack>
   );
 }

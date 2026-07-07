@@ -5,7 +5,7 @@ import { loginSchema, type LoginFormValues } from "../model/login.schema";
 
 export function useLoginForm() {
   const {
-    clearErrors,
+    trigger,
     control,
     formState: { errors },
     handleSubmit,
@@ -13,7 +13,7 @@ export function useLoginForm() {
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     mode: "onBlur",
-    reValidateMode: "onBlur",
+    shouldFocusError: true,
     defaultValues: {
       email: "",
       password: "",
@@ -22,7 +22,7 @@ export function useLoginForm() {
   });
 
   return {
-    clearErrors,
+    trigger,
     control,
     errors,
     handleSubmit,

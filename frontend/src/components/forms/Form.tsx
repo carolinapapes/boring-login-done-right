@@ -8,7 +8,7 @@ type FormProps = {
 
 export function Form({ children, ...props }: FormProps) {
   return (
-    <Stack as="form" noValidate {...props}>
+    <Stack as="form" gap="sm" noValidate {...props}>
       {children}
     </Stack>
   );

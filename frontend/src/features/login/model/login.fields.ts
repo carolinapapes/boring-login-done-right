@@ -1,26 +1,33 @@
+import type { InputHTMLAttributes } from "react";
 import type { LoginFormValues } from "./login.schema";
 
 type LoginFieldConfig = {
-  name: keyof LoginFormValues;
   id: string;
+  name: keyof Pick<LoginFormValues, "email" | "password">;
   label: string;
-  type: React.HTMLInputTypeAttribute;
+  type: InputHTMLAttributes<HTMLInputElement>["type"];
   autoComplete: string;
+  inputMode?: InputHTMLAttributes<HTMLInputElement>["inputMode"];
+  spellCheck?: boolean;
+  autoCapitalize?: string;
 };
 
-export const LOGIN_FIELDS: LoginFieldConfig[] = [
+export const LOGIN_FIELDS = [
   {
-    name: "email",
     id: "email",
+    name: "email",
     label: "Email",
     type: "email",
     autoComplete: "email",
+    inputMode: "email",
+    spellCheck: false,
+    autoCapitalize: "none",
   },
   {
-    name: "password",
     id: "password",
+    name: "password",
     label: "Password",
     type: "password",
     autoComplete: "current-password",
   },
-];
+] satisfies LoginFieldConfig[];

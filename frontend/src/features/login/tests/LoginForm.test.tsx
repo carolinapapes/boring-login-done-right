@@ -1,4 +1,4 @@
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -24,25 +24,27 @@ describe("LoginForm", () => {
     expect(await screen.findByText("Email is required")).toBeInTheDocument();
   });
 
-  it("clears the field error on focus and validates again on blur", async () => {
+  it("keeps the field error on focus and clears it when the field becomes valid", async () => {
     const user = userEvent.setup();
+    const onSubmit = vi.fn();
 
-    render(<LoginForm onSubmit={vi.fn()} />);
+    render(<LoginForm onSubmit={onSubmit} />);
+
+    await user.click(screen.getByRole("button", { name: "Log in" }));
 
     const emailInput = screen.getByLabelText("Email");
 
-    await user.click(emailInput);
-    await user.tab();
-
     expect(await screen.findByText("Email is required")).toBeInTheDocument();
 
     await user.click(emailInput);
 
-    expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
+    expect(screen.getByText("Email is required")).toBeInTheDocument();
 
-    await user.tab();
+    await user.type(emailInput, "user@example.com");
 
-    expect(await screen.findByText("Email is required")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
+    });
   });
 
   it("shows an invalid email error on blur", async () => {
@@ -240,5 +242,87 @@ describe("LoginForm", () => {
       },
       expect.anything(),
     );
+  });
+  it("uses mobile and autofill friendly email attributes", () => {
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    const emailInput = screen.getByLabelText("Email");
+
+    expect(emailInput).toHaveAttribute("type", "email");
+    expect(emailInput).toHaveAttribute("name", "email");
+    expect(emailInput).toHaveAttribute("autocomplete", "email");
+    expect(emailInput).toHaveAttribute("inputmode", "email");
+    expect(emailInput).toHaveAttribute("spellcheck", "false");
+    expect(emailInput).toHaveAttribute("autocapitalize", "none");
+  });
+  it("uses password-manager friendly password attributes", () => {
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    const passwordInput = screen.getByLabelText("Password");
+
+    expect(passwordInput).toHaveAttribute("type", "password");
+    expect(passwordInput).toHaveAttribute("name", "password");
+    expect(passwordInput).toHaveAttribute("autocomplete", "current-password");
+  });
+  it("moves focus to the first invalid field after empty submit", async () => {
+    const user = userEvent.setup();
+
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+
+    expect(await screen.findByText("Email is required")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Email")).toHaveFocus();
+    });
+  });
+  it("moves focus to the form error summary when an API error is shown", async () => {
+    render(
+      <LoginForm
+        onSubmit={vi.fn()}
+        errorMessage="Invalid email or password."
+      />,
+    );
+
+    const errorSummary = screen.getByRole("alert");
+
+    expect(errorSummary).toHaveTextContent("Invalid email or password.");
+
+    await waitFor(() => {
+      expect(errorSummary).toHaveFocus();
+    });
+  });
+  it("uses a logical keyboard tab order", async () => {
+    const user = userEvent.setup();
+
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const passwordToggle = screen.getByRole("button", {
+      name: "Show password",
+    });
+    const rememberMe = screen.getByRole("checkbox", {
+      name: "Remember me",
+    });
+    const submitButton = screen.getByRole("button", {
+      name: "Log in",
+    });
+
+    await user.tab();
+    expect(emailInput).toHaveFocus();
+
+    await user.tab();
+    expect(passwordInput).toHaveFocus();
+
+    await user.tab();
+    expect(passwordToggle).toHaveFocus();
+
+    await user.tab();
+    expect(rememberMe).toHaveFocus();
+
+    await user.tab();
+    expect(submitButton).toHaveFocus();
   });
 });
