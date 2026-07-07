@@ -67,4 +67,16 @@ describe("FormCheckboxField", () => {
       expect.anything(),
     );
   });
+  it("submits false when left unchecked", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<TestForm onSubmit={onSubmit} />);
+    await user.click(screen.getByRole("button", { name: "Submit" }));
+    expect(onSubmit).toHaveBeenCalledWith(
+      {
+        rememberMe: false,
+      },
+      expect.anything(),
+    );
+  });
 });
