@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router";
 import { useSession } from "../hooks/useSession";
 import { SessionSkeleton } from "./SessionSkeleton";
 
-export function ProtectedRoute() {
+export function PublicOnlyRoute() {
   const session = useSession();
 
   if (session.status === "checking") {
@@ -11,8 +11,8 @@ export function ProtectedRoute() {
   }
 
   if (session.status === "authenticated") {
-    return <Outlet />;
+    return <Navigate to="/dashboard" replace />;
   }
 
-  return <Navigate to="/login" replace />;
+  return <Outlet />;
 }
