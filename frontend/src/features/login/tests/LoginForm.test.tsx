@@ -264,4 +264,65 @@ describe("LoginForm", () => {
     expect(passwordInput).toHaveAttribute("name", "password");
     expect(passwordInput).toHaveAttribute("autocomplete", "current-password");
   });
+  it("moves focus to the first invalid field after empty submit", async () => {
+    const user = userEvent.setup();
+
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+
+    expect(await screen.findByText("Email is required")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Email")).toHaveFocus();
+    });
+  });
+  it("moves focus to the form error summary when an API error is shown", async () => {
+    render(
+      <LoginForm
+        onSubmit={vi.fn()}
+        errorMessage="Invalid email or password."
+      />,
+    );
+
+    const errorSummary = screen.getByRole("alert");
+
+    expect(errorSummary).toHaveTextContent("Invalid email or password.");
+
+    await waitFor(() => {
+      expect(errorSummary).toHaveFocus();
+    });
+  });
+  it("uses a logical keyboard tab order", async () => {
+    const user = userEvent.setup();
+
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const passwordToggle = screen.getByRole("button", {
+      name: "Show password",
+    });
+    const rememberMe = screen.getByRole("checkbox", {
+      name: "Remember me",
+    });
+    const submitButton = screen.getByRole("button", {
+      name: "Log in",
+    });
+
+    await user.tab();
+    expect(emailInput).toHaveFocus();
+
+    await user.tab();
+    expect(passwordInput).toHaveFocus();
+
+    await user.tab();
+    expect(passwordToggle).toHaveFocus();
+
+    await user.tab();
+    expect(rememberMe).toHaveFocus();
+
+    await user.tab();
+    expect(submitButton).toHaveFocus();
+  });
 });
