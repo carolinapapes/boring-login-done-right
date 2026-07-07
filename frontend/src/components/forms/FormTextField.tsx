@@ -1,7 +1,7 @@
 import { Stack } from "@/components/layout/Stack";
 import { Input } from "@/components/ui/input";
-import { FormMessage } from "./FormMessage";
 import { Label } from "@/components/ui/label";
+import { FormMessage } from "./FormMessage";
 
 type FormTextFieldEndButtonProps = {
   label: string;
@@ -74,7 +74,7 @@ export function FormTextField({
         />
         {endButton && <OptionalButton {...endButton} />}
       </div>
-      {error && <FormMessage id={errorId} message={error} />}
+      <FormMessage id={errorId} message={error} reserveSpace />
     </Stack>
   );
 }
