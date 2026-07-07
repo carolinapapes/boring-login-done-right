@@ -3,6 +3,10 @@ export type SessionUser = {
   email: string;
 };
 
+export type SessionCheckingState = {
+  status: "checking";
+};
+
 export type AuthenticatedSession = {
   status: "authenticated";
   user: SessionUser;
@@ -18,3 +22,5 @@ export type ExpiredSession = {
 
 export type SessionState =
   AuthenticatedSession | UnauthenticatedSession | ExpiredSession;
+
+export type SessionViewState = SessionCheckingState | SessionState;
