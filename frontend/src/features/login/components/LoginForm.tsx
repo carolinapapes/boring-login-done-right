@@ -9,6 +9,7 @@ import { useLoginForm } from "../hooks/useLoginForm";
 import { useSlowFeedback } from "@/components/forms/hooks/useSlowFeedback";
 
 import type { LoginFormValues } from "../model/login.schema";
+import { LoginOptions } from "./LoginOptions";
 
 type LoginFormProps = {
   onSubmit: SubmitHandler<LoginFormValues>;
@@ -21,7 +22,8 @@ export function LoginForm({
   isSubmitting = false,
   errorMessage,
 }: LoginFormProps) {
-  const { clearErrors, errors, handleSubmit, register } = useLoginForm();
+  const { clearErrors, control, errors, handleSubmit, register } =
+    useLoginForm();
   const guardedSubmit = usePreventDuplicateSubmit(onSubmit);
   const showSlowFeedback = useSlowFeedback(isSubmitting);
 
@@ -41,6 +43,8 @@ export function LoginForm({
           variant="status"
         />
       )}
+
+      <LoginOptions control={control} disabled={isSubmitting} />
 
       <FormSubmitButton
         isSubmitting={isSubmitting}
