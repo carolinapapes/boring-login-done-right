@@ -27,7 +27,7 @@ export function FormCheckboxField<TFormValues extends FieldValues>({
         <div className="flex items-center gap-2">
           <Checkbox
             id={id}
-            checked={field.value}
+            checked={field.value ?? false}
             disabled={disabled}
             onCheckedChange={(checked) => field.onChange(checked === true)}
           />
