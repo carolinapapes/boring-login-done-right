@@ -1,24 +1,13 @@
 import { LoginForm } from "./LoginForm";
-import { useLogin } from "../hooks/useLogin";
-import { getLoginErrorMessageFromError } from "../model/login.errors";
-
-import type { LoginFormValues } from "../model/login.schema";
+import { useLoginFlow } from "../hooks/useLoginFlow";
 
 export function LoginSection() {
-  const loginMutation = useLogin();
-
-  function handleLogin(values: LoginFormValues) {
-    loginMutation.mutate(values);
-  }
-
-  const errorMessage = loginMutation.isError
-    ? getLoginErrorMessageFromError(loginMutation.error)
-    : undefined;
+  const { submitLogin, isSubmitting, errorMessage } = useLoginFlow();
 
   return (
     <LoginForm
-      onSubmit={handleLogin}
-      isSubmitting={loginMutation.isPending}
+      onSubmit={submitLogin}
+      isSubmitting={isSubmitting}
       errorMessage={errorMessage}
     />
   );
