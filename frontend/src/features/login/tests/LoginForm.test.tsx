@@ -243,4 +243,25 @@ describe("LoginForm", () => {
       expect.anything(),
     );
   });
+  it("uses mobile and autofill friendly email attributes", () => {
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    const emailInput = screen.getByLabelText("Email");
+
+    expect(emailInput).toHaveAttribute("type", "email");
+    expect(emailInput).toHaveAttribute("name", "email");
+    expect(emailInput).toHaveAttribute("autocomplete", "email");
+    expect(emailInput).toHaveAttribute("inputmode", "email");
+    expect(emailInput).toHaveAttribute("spellcheck", "false");
+    expect(emailInput).toHaveAttribute("autocapitalize", "none");
+  });
+  it("uses password-manager friendly password attributes", () => {
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    const passwordInput = screen.getByLabelText("Password");
+
+    expect(passwordInput).toHaveAttribute("type", "password");
+    expect(passwordInput).toHaveAttribute("name", "password");
+    expect(passwordInput).toHaveAttribute("autocomplete", "current-password");
+  });
 });

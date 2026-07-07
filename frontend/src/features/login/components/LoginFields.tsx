@@ -62,6 +62,9 @@ export function LoginFields({ register, errors, trigger }: LoginFieldsProps) {
             label={field.label}
             type={isPasswordField ? passwordInputType : field.type}
             autoComplete={field.autoComplete}
+            inputMode={field.inputMode}
+            spellCheck={field.spellCheck}
+            autoCapitalize={field.autoCapitalize}
             register={getRevalidatingRegister({
               fieldName: field.name,
               register,
