@@ -27,7 +27,7 @@ export function FormErrorSummary({ message }: FormErrorSummaryProps) {
         focus:ring-1 focus:ring-ring focus:ring-offset-1
       "
         >
-          <p role="alert">{message}</p>
+          {message}
         </div>
       ) : null}
     </div>

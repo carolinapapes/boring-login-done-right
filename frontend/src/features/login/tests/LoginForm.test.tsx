@@ -1,4 +1,4 @@
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -24,25 +24,27 @@ describe("LoginForm", () => {
     expect(await screen.findByText("Email is required")).toBeInTheDocument();
   });
 
-  it("clears the field error on focus and validates again on blur", async () => {
+  it("keeps the field error on focus and clears it when the field becomes valid", async () => {
     const user = userEvent.setup();
+    const onSubmit = vi.fn();
 
-    render(<LoginForm onSubmit={vi.fn()} />);
+    render(<LoginForm onSubmit={onSubmit} />);
+
+    await user.click(screen.getByRole("button", { name: "Log in" }));
 
     const emailInput = screen.getByLabelText("Email");
 
-    await user.click(emailInput);
-    await user.tab();
-
     expect(await screen.findByText("Email is required")).toBeInTheDocument();
 
     await user.click(emailInput);
 
-    expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
+    expect(screen.getByText("Email is required")).toBeInTheDocument();
 
-    await user.tab();
+    await user.type(emailInput, "user@example.com");
 
-    expect(await screen.findByText("Email is required")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
+    });
   });
 
   it("shows an invalid email error on blur", async () => {
