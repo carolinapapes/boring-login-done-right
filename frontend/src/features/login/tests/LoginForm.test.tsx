@@ -1,12 +1,36 @@
-import { render, screen, act, waitFor } from "@testing-library/react";
+import type { ComponentProps } from "react";
+import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+import { renderWithProviders } from "@/test/renderWithProviders";
+
 import { LoginForm } from "../components/LoginForm";
+
+type LoginFormProps = ComponentProps<typeof LoginForm>;
+
+function renderLoginForm(overrides: Partial<LoginFormProps> = {}) {
+  const defaultProps: LoginFormProps = {
+    onSubmit: vi.fn(),
+    ...overrides,
+  };
+
+  const view = renderWithProviders(<LoginForm {...defaultProps} />);
+
+  function rerenderLoginForm(nextOverrides: Partial<LoginFormProps> = {}) {
+    view.rerender(<LoginForm {...defaultProps} {...nextOverrides} />);
+  }
+
+  return {
+    ...view,
+    props: defaultProps,
+    rerenderLoginForm,
+  };
+}
 
 describe("LoginForm", () => {
   it("renders email, password, and submit button", () => {
-    render(<LoginForm onSubmit={vi.fn()} />);
+    renderLoginForm();
 
     expect(screen.getByLabelText("Email")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
@@ -16,7 +40,7 @@ describe("LoginForm", () => {
   it("shows validation errors on blur", async () => {
     const user = userEvent.setup();
 
-    render(<LoginForm onSubmit={vi.fn()} />);
+    renderLoginForm();
 
     await user.click(screen.getByLabelText("Email"));
     await user.tab();
@@ -28,7 +52,7 @@ describe("LoginForm", () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
 
-    render(<LoginForm onSubmit={onSubmit} />);
+    renderLoginForm({ onSubmit });
 
     await user.click(screen.getByRole("button", { name: "Log in" }));
 
@@ -50,7 +74,7 @@ describe("LoginForm", () => {
   it("shows an invalid email error on blur", async () => {
     const user = userEvent.setup();
 
-    render(<LoginForm onSubmit={vi.fn()} />);
+    renderLoginForm();
 
     const emailInput = screen.getByLabelText("Email");
 
@@ -66,7 +90,7 @@ describe("LoginForm", () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
 
-    render(<LoginForm onSubmit={onSubmit} />);
+    renderLoginForm({ onSubmit });
 
     await user.type(screen.getByLabelText("Email"), "user@example.com");
     await user.type(screen.getByLabelText("Password"), "password");
@@ -81,8 +105,9 @@ describe("LoginForm", () => {
       expect.anything(),
     );
   });
+
   it("shows the submitting state", () => {
-    render(<LoginForm onSubmit={vi.fn()} isSubmitting />);
+    renderLoginForm({ isSubmitting: true });
 
     const button = screen.getByRole("button", { name: "Logging in..." });
 
@@ -91,17 +116,15 @@ describe("LoginForm", () => {
   });
 
   it("shows a login error message", () => {
-    render(
-      <LoginForm
-        onSubmit={vi.fn()}
-        errorMessage="Invalid email or password."
-      />,
-    );
+    renderLoginForm({
+      errorMessage: "Invalid email or password.",
+    });
 
     expect(screen.getByRole("alert")).toHaveTextContent(
       "Invalid email or password.",
     );
   });
+
   it("submits the form only once when the submit button is clicked rapidly", async () => {
     const user = userEvent.setup();
 
@@ -109,7 +132,7 @@ describe("LoginForm", () => {
       () => new Promise((resolve) => setTimeout(resolve, 100)),
     );
 
-    render(<LoginForm onSubmit={onSubmit} />);
+    renderLoginForm({ onSubmit });
 
     await user.type(screen.getByLabelText(/email/i), "user@example.com");
     await user.type(screen.getByLabelText(/^password$/i), "password");
@@ -120,6 +143,7 @@ describe("LoginForm", () => {
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
+
   it("submits only once when Enter is pressed repeatedly", async () => {
     const user = userEvent.setup();
 
@@ -127,7 +151,7 @@ describe("LoginForm", () => {
       () => new Promise((resolve) => setTimeout(resolve, 100)),
     );
 
-    render(<LoginForm onSubmit={onSubmit} />);
+    renderLoginForm({ onSubmit });
 
     await user.type(screen.getByLabelText(/email/i), "user@example.com");
     const password = screen.getByLabelText(/^password$/i);
@@ -142,13 +166,14 @@ describe("LoginForm", () => {
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
+
   it("shows and hides slow network feedback based on the submitting state", () => {
     vi.useFakeTimers();
 
     try {
-      const { rerender } = render(
-        <LoginForm onSubmit={vi.fn()} isSubmitting />,
-      );
+      const { rerenderLoginForm } = renderLoginForm({
+        isSubmitting: true,
+      });
 
       expect(
         screen.queryByText(/taking longer than usual/i),
@@ -168,7 +193,9 @@ describe("LoginForm", () => {
 
       expect(screen.getByText(/taking longer than usual/i)).toBeInTheDocument();
 
-      rerender(<LoginForm onSubmit={vi.fn()} isSubmitting={false} />);
+      rerenderLoginForm({
+        isSubmitting: false,
+      });
 
       act(() => {
         vi.advanceTimersByTime(0);
@@ -178,7 +205,9 @@ describe("LoginForm", () => {
         screen.queryByText(/taking longer than usual/i),
       ).not.toBeInTheDocument();
 
-      rerender(<LoginForm onSubmit={vi.fn()} isSubmitting />);
+      rerenderLoginForm({
+        isSubmitting: true,
+      });
 
       expect(
         screen.queryByText(/taking longer than usual/i),
@@ -193,10 +222,11 @@ describe("LoginForm", () => {
       vi.useRealTimers();
     }
   });
+
   it("toggles password visibility", async () => {
     const user = userEvent.setup();
 
-    render(<LoginForm onSubmit={vi.fn()} />);
+    renderLoginForm();
 
     const passwordInput = screen.getByLabelText(/^password$/i);
     const toggleButton = screen.getByRole("button", {
@@ -223,11 +253,12 @@ describe("LoginForm", () => {
       screen.getByRole("button", { name: /show password/i }),
     ).toHaveAttribute("aria-pressed", "false");
   });
+
   it("submits remember me as true when checked", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
 
-    render(<LoginForm onSubmit={onSubmit} />);
+    renderLoginForm({ onSubmit });
 
     await user.type(screen.getByLabelText("Email"), "user@example.com");
     await user.type(screen.getByLabelText("Password"), "password");
@@ -243,8 +274,9 @@ describe("LoginForm", () => {
       expect.anything(),
     );
   });
+
   it("uses mobile and autofill friendly email attributes", () => {
-    render(<LoginForm onSubmit={vi.fn()} />);
+    renderLoginForm();
 
     const emailInput = screen.getByLabelText("Email");
 
@@ -255,8 +287,9 @@ describe("LoginForm", () => {
     expect(emailInput).toHaveAttribute("spellcheck", "false");
     expect(emailInput).toHaveAttribute("autocapitalize", "none");
   });
+
   it("uses password-manager friendly password attributes", () => {
-    render(<LoginForm onSubmit={vi.fn()} />);
+    renderLoginForm();
 
     const passwordInput = screen.getByLabelText("Password");
 
@@ -264,10 +297,11 @@ describe("LoginForm", () => {
     expect(passwordInput).toHaveAttribute("name", "password");
     expect(passwordInput).toHaveAttribute("autocomplete", "current-password");
   });
+
   it("moves focus to the first invalid field after empty submit", async () => {
     const user = userEvent.setup();
 
-    render(<LoginForm onSubmit={vi.fn()} />);
+    renderLoginForm();
 
     await user.click(screen.getByRole("button", { name: "Log in" }));
 
@@ -277,13 +311,11 @@ describe("LoginForm", () => {
       expect(screen.getByLabelText("Email")).toHaveFocus();
     });
   });
+
   it("moves focus to the form error summary when an API error is shown", async () => {
-    render(
-      <LoginForm
-        onSubmit={vi.fn()}
-        errorMessage="Invalid email or password."
-      />,
-    );
+    renderLoginForm({
+      errorMessage: "Invalid email or password.",
+    });
 
     const errorSummary = screen.getByRole("alert");
 
@@ -293,10 +325,11 @@ describe("LoginForm", () => {
       expect(errorSummary).toHaveFocus();
     });
   });
+
   it("uses a logical keyboard tab order", async () => {
     const user = userEvent.setup();
 
-    render(<LoginForm onSubmit={vi.fn()} />);
+    renderLoginForm();
 
     const emailInput = screen.getByLabelText("Email");
     const passwordInput = screen.getByLabelText("Password");
@@ -305,6 +338,9 @@ describe("LoginForm", () => {
     });
     const rememberMe = screen.getByRole("checkbox", {
       name: "Remember me",
+    });
+    const forgotPasswordLink = screen.getByRole("link", {
+      name: "Forgot password?",
     });
     const submitButton = screen.getByRole("button", {
       name: "Log in",
@@ -321,6 +357,9 @@ describe("LoginForm", () => {
 
     await user.tab();
     expect(rememberMe).toHaveFocus();
+
+    await user.tab();
+    expect(forgotPasswordLink).toHaveFocus();
 
     await user.tab();
     expect(submitButton).toHaveFocus();

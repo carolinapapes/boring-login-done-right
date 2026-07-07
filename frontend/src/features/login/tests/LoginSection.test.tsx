@@ -1,28 +1,12 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { delay, http, HttpResponse } from "msw";
 
 import { server } from "@/mocks/server";
+import { renderWithProviders } from "@/test/renderWithProviders";
+
 import { LoginSection } from "../components/LoginSection";
-
-function renderWithQueryClient(ui: React.ReactNode) {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-      mutations: {
-        retry: false,
-      },
-    },
-  });
-
-  return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
-  );
-}
 
 describe("LoginSection", () => {
   it("shows a pending state while login is submitting", async () => {
@@ -41,7 +25,7 @@ describe("LoginSection", () => {
 
     const user = userEvent.setup();
 
-    renderWithQueryClient(<LoginSection />);
+    renderWithProviders(<LoginSection />);
 
     await user.type(screen.getByLabelText("Email"), "slow@example.com");
     await user.type(screen.getByLabelText("Password"), "password");
@@ -58,7 +42,7 @@ describe("LoginSection", () => {
   it("shows an account not verified message", async () => {
     const user = userEvent.setup();
 
-    renderWithQueryClient(<LoginSection />);
+    renderWithProviders(<LoginSection />);
 
     await user.type(screen.getByLabelText("Email"), "unverified@example.com");
     await user.type(screen.getByLabelText("Password"), "password");
@@ -72,7 +56,7 @@ describe("LoginSection", () => {
   it("shows a rate limited message", async () => {
     const user = userEvent.setup();
 
-    renderWithQueryClient(<LoginSection />);
+    renderWithProviders(<LoginSection />);
 
     await user.type(screen.getByLabelText("Email"), "limited@example.com");
     await user.type(screen.getByLabelText("Password"), "password");
@@ -86,7 +70,7 @@ describe("LoginSection", () => {
   it("shows a server error message", async () => {
     const user = userEvent.setup();
 
-    renderWithQueryClient(<LoginSection />);
+    renderWithProviders(<LoginSection />);
 
     await user.type(screen.getByLabelText("Email"), "server@example.com");
     await user.type(screen.getByLabelText("Password"), "password");
@@ -100,7 +84,7 @@ describe("LoginSection", () => {
   it("shows a network error message", async () => {
     const user = userEvent.setup();
 
-    renderWithQueryClient(<LoginSection />);
+    renderWithProviders(<LoginSection />);
 
     await user.type(screen.getByLabelText("Email"), "network@example.com");
     await user.type(screen.getByLabelText("Password"), "password");
