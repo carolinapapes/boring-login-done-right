@@ -221,4 +221,24 @@ describe("LoginForm", () => {
       screen.getByRole("button", { name: /show password/i }),
     ).toHaveAttribute("aria-pressed", "false");
   });
+  it("submits remember me as true when checked", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+
+    render(<LoginForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText("Email"), "user@example.com");
+    await user.type(screen.getByLabelText("Password"), "password");
+    await user.click(screen.getByRole("checkbox", { name: "Remember me" }));
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      {
+        email: "user@example.com",
+        password: "password",
+        rememberMe: true,
+      },
+      expect.anything(),
+    );
+  });
 });
