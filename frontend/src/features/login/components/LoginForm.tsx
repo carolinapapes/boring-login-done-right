@@ -44,7 +44,7 @@ export function LoginForm({
         />
       )}
 
-      <LoginOptions control={control} />
+      <LoginOptions control={control} disabled={isSubmitting} />
 
       <FormSubmitButton
         isSubmitting={isSubmitting}

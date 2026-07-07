@@ -29,7 +29,7 @@ export function FormCheckboxField<TFormValues extends FieldValues>({
             id={id}
             checked={field.value}
             disabled={disabled}
-            onCheckedChange={field.onChange}
+            onCheckedChange={(checked) => field.onChange(checked === true)}
           />
 
           <Label htmlFor={id}>{label}</Label>
