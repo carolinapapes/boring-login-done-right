@@ -41,49 +41,78 @@ The goal is not to build a complete authentication platform. The goal is to buil
 
 ## Features
 
-### Done
+### Login form experience
 
-- Email and password login form
-- Schema-based validation with Zod
-- React Hook Form integration
-- Validation on blur
-- Error clearing while editing
-- Accessible labels and error messages
-- Correct autocomplete attributes
-- Reusable form components
-- Typed login API boundary
-- TanStack Query login mutation
-- MSW mocked login responses
-- Frontend-safe error codes
-- User-friendly error message mapping
-- Unit tests for validation and error mapping
-- Component tests for form behavior
-- API tests with mocked responses
-- TypeScript strict mode
-- ESLint and Prettier setup
-- GitHub Actions quality checks
+* Email and password login
+* Remember-me option
+* Password visibility toggle
+* Browser autofill and password-manager support
+* Clear validation feedback
+* Form-level error feedback
+* Responsive login layout
 
-### Planned
+### Validation and user feedback
 
-- Stronger loading and pending states
-- Disabled submit while logging in
-- Double-submit prevention
-- Slow-network feedback
-- Skeleton loading UI
-- Forgot password route
-- Protected dashboard route
-- Session checking
-- Redirect behavior after login
-- Password visibility toggle
-- Remember-me checkbox
-- Responsive layout polish
-- Internationalization
-- Playwright end-to-end tests
-- Accessibility tests with axe
-- Storybook documentation
-- Frontend error monitoring
-- Safe analytics events
-- Final portfolio polish
+* Schema-based form validation
+* Validation on blur
+* Error clearing while editing
+* Accessible field-level errors
+* API error messages mapped to user-friendly feedback
+* Safe handling of invalid credentials, unverified accounts, rate limits, server errors, and network failures
+
+### Accessibility
+
+* Visible labels
+* Accessible error messages
+* Keyboard-friendly controls
+* Focus management for form and API errors
+* Semantic form structure
+* Accessible password visibility control
+
+### API and state management
+
+* Typed login API boundary
+* TanStack Query login mutation
+* Mocked backend responses with MSW
+* Separation between form values and API payloads
+* Frontend-safe error codes
+* Slow-response simulation for loading-state work
+
+### Testing and quality
+
+* Unit tests for validation and error mapping
+* Component tests for login behavior
+* API tests with mocked responses
+* Tests for password visibility and remember-me behavior
+* TypeScript strict mode
+* ESLint and Prettier setup
+* GitHub Actions quality checks
+
+### UI foundation
+
+* Tailwind CSS styling
+* shadcn/ui components
+* Reusable form components
+* Consistent spacing, focus, and error states
+* Layout-safe form messages
+
+### Planned feature areas
+
+* Loading and pending states
+* Slow-network feedback
+* Skeleton loading UI
+* Forgot password route
+* Protected dashboard route
+* Session checking
+* Redirect behavior after login
+* Internationalization
+* Playwright end-to-end tests
+* Accessibility checks with axe
+* Storybook documentation
+* Frontend error monitoring
+* Safe analytics events
+
+
 
 ## API states
 
