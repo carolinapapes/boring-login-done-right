@@ -75,6 +75,7 @@ export function FormTextField({
           placeholder={placeholder}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errorId : undefined}
+          className={endButton ? "h-11 pr-16" : "h-11"}
           {...register}
         />
         {endButton && <OptionalButton {...endButton} />}
