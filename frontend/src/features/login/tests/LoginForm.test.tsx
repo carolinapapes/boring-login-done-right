@@ -74,6 +74,7 @@ describe("LoginForm", () => {
       {
         email: "user@example.com",
         password: "password",
+        rememberMe: false,
       },
       expect.anything(),
     );

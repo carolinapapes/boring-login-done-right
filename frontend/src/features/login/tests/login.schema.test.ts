@@ -6,6 +6,7 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({
       email: "user@example.com",
       password: "password",
+      rememberMe: false,
     });
 
     expect(result.success).toBe(true);
@@ -15,6 +16,7 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({
       email: "wrong-email",
       password: "password",
+      rememberMe: false,
     });
 
     expect(result.success).toBe(false);
@@ -24,6 +26,7 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({
       email: "",
       password: "password",
+      rememberMe: false,
     });
 
     expect(result.success).toBe(false);
@@ -33,6 +36,7 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({
       email: "user@example.com",
       password: "",
+      rememberMe: false,
     });
 
     expect(result.success).toBe(false);
