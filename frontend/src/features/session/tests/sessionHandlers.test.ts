@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { server } from "@/mocks/server";
 import {
+  mockAuthenticatedSession,
   mockExpiredSession,
   mockSlowAuthenticatedSession,
   mockUnauthenticatedSession,
@@ -10,7 +11,15 @@ import {
 import { getSession } from "../api/sessionApi";
 
 describe("session MSW handlers", () => {
-  it("mocks an authenticated session by default", async () => {
+  it("mocks an unauthenticated session by default", async () => {
+    await expect(getSession()).resolves.toEqual({
+      status: "unauthenticated",
+    });
+  });
+
+  it("mocks an authenticated session", async () => {
+    server.use(mockAuthenticatedSession);
+
     await expect(getSession()).resolves.toEqual({
       status: "authenticated",
       user: {
