@@ -2,11 +2,15 @@ import { delay, http, HttpResponse } from "msw";
 
 import type { LoginCredentials } from "@/features/login/model/login.types";
 
+import { setMockSessionStatus } from "./sessionHandlers";
+
 export const loginHandlers = [
   http.post("/api/login", async ({ request }) => {
     const credentials = (await request.json()) as LoginCredentials;
 
     if (credentials.email === "success@example.com") {
+      setMockSessionStatus("authenticated");
+
       return HttpResponse.json({
         user: {
           id: "user-1",
@@ -36,6 +40,8 @@ export const loginHandlers = [
 
     if (credentials.email === "slow@example.com") {
       await delay(2000);
+
+      setMockSessionStatus("authenticated");
 
       return HttpResponse.json({
         user: {
